@@ -1,28 +1,30 @@
 import shlex
-import subprocess
 import os
 import sys
 import traceback
 import readline
 from bahash_builtins import builtins, builtin_exec 
+# Need to trim down/streamline imports
 
-# Note: This is windows compatible!
+# Note: This is windows compatible! Not OSX however, current readline usage doesn't account for libedit on OSX
 # Note: Basic tab completion available!
 
 def main():
 	readline.parse_and_bind('tab: complete') # Enable local file tab completion and history
+	# Need to initialize history file here
+
 	while True:
 		try:
 			dir = os.getcwd()
-			input = raw_input('{} >> '.format(dir)) #print >>, take user input (blocking)
-			args = shlex.split(input) #use shell lexer module to parse input into list of strings	
-			run = builtins.get(args[0], builtin_exec)
-			ret = run(args)
+			input = raw_input('{} >> '.format(dir)) # Print >>, take user input (blocking)
+			args = shlex.split(input) # Use shell lexer module to parse input into list of strings	
+			run = builtins.get(args[0], builtin_exec) # Store relevant function into run variable (builtin_exec being default) 
+			retVal = run(args) # Execute function stored in run with arguments args, storing the return value in retVal
 			
 
 		
 		except KeyboardInterrupt: # Can use Finally to run commands regardless, or else to run things when no exception
-			print "\nCaught interrupt signal! Quitting..."
+			print "\r\nCaught interrupt signal! Quitting..."
 			break
 		
 		except ValueError:

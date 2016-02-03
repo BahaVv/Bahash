@@ -8,6 +8,7 @@ def builtin_cd(args):
 	os.chdir(args[1])
 
 def builtin_exec(args):
+	# Note: A known limitation of this implementation is that builtins cannot be backgrounded
 	proc = subprocess.Popen(args, executable = args[0], stdin = sys.stdin, stdout = sys.stdout, stderr = sys.stderr)
 	return proc.wait()
 
@@ -37,6 +38,6 @@ builtins = {
 
 
 if __name__ == '__main__':
-	print "The bahash builtins don't work as a standalone program -- they're imported by the main module.\n"
+	print "The bahash builtins don't work as a standalone program -- they're imported by the main module.\r\n"
 else:
 	pass	
