@@ -3,9 +3,11 @@ import subprocess
 import os
 import sys
 import traceback
-from bahsh_builtins import builtins, builtin_exec 
+import readline
+from bahash_builtins import builtins, builtin_exec 
 
 # Note: This is windows compatible!
+# Note: Basic tab completion available!
 
 def main():
 	readline.parse_and_bind('tab: complete') # Enable local file tab completion and history

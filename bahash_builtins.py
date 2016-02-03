@@ -37,6 +37,6 @@ builtins = {
 
 
 if __name__ == '__main__':
-	print "The bahsh builtins don't work as a standalone program -- they're imported by the main module.\n"
+	print "The bahash builtins don't work as a standalone program -- they're imported by the main module.\n"
 else:
 	pass	
