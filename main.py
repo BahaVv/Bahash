@@ -8,6 +8,7 @@ from bahsh_builtins import builtins, builtin_exec
 # Note: This is windows compatible!
 
 def main():
+	readline.parse_and_bind('tab: complete') # Enable local file tab completion and history
 	while True:
 		try:
 			dir = os.getcwd()
