@@ -1,4 +1,5 @@
-import subprocess
+ildren = [] # list of children processes
+mport subprocess
 import os
 import sys
 
@@ -17,25 +18,17 @@ def builtin_exec(args):
 	input = sys.stdin
 	output = sys.stdout
 	err = sys.stderr 
-	redirect = False
 	if '<' in args:
-		redirect = True
 		idx = args.index('<')
 		input = open(args[idx+1], 'r') 
 		args = args[:idx]
 
 	if '>' in args:
-		if redirect == True:
-			raise Exception("More than one redirect on the same line!")
-		redirect = True
 		idx = args.index('>')
 		output = open(args[idx+1], 'w') 
 		args = args[:idx]
 
 	if '>>' in args:
-		if redirect == True:
-			raise Exception("More than one redirect on the same line!")
-		redirect = True
 		idx = args.index('>>')
 		output = open(args[idx+1], 'a') 
 		args = args[:idx]

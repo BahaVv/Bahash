@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 import readline
-from bahash_builtins import builtins, builtin_exec 
+from bahash_builtins import builtins, builtin_exec, children 
 # Need to trim down/streamline imports
 
 # Note: This is windows compatible! Not OSX however, current readline usage doesn't account for libedit on OSX
@@ -40,13 +40,14 @@ def main():
 		
 		except ValueError:
 			print "Unable to parse command. Do you have a non-paired delimiter? Think (), [], '', or \"\""
-			traceback.print_exc()
 
 		except OSError:
 			print "Received an OS Error. Does the file or command you're looking for exist, or are you running out of memory?"
 		
 		except Exception:
-			print "Error: I'm unsure of how to parse/execute the previous input. I caught the following exception:"
+			print "Error: I'm unsure of how to parse/execute the previous input. Common reasons for this are multiple redirects"
+			print "on the same line, commands that don't syntactically make sense, or attempting to reach files that don't exist."
+			print "Additionally, I caught the following exception:"
 			traceback.print_exc()
 
 
