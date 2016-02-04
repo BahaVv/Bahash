@@ -2,6 +2,9 @@ import subprocess
 import os
 import sys
 
+if sys.version_info[0] != 2:
+	print "These builtins were written for Python 2! If this somehow compiled, please do not run it."
+
 children = [] # list of children processes
 
 def builtin_cd(args):
@@ -11,27 +14,60 @@ def builtin_cd(args):
 
 def builtin_exec(args):
 	# Note: A known limitation of this implementation is that builtins cannot be backgrounded
-	if "&" not in args:
-		proc = subprocess.Popen(args, executable = args[0], stdin = sys.stdin, stdout = sys.stdout, stderr = sys.stderr)
+	input = sys.stdin
+	output = sys.stdout
+	err = sys.stderr 
+	redirect = False
+	if '<' in args:
+		redirect = True
+		idx = args.index('<')
+		input = open(args[idx+1], 'r') 
+		args = args[:idx]
+
+	if '>' in args:
+		if redirect == True:
+			raise Exception("More than one redirect on the same line!")
+		redirect = True
+		idx = args.index('>')
+		output = open(args[idx+1], 'w') 
+		args = args[:idx]
+
+	if '>>' in args:
+		if redirect == True:
+			raise Exception("More than one redirect on the same line!")
+		redirect = True
+		idx = args.index('>>')
+		output = open(args[idx+1], 'a') 
+		args = args[:idx]
+
+	if '&' not in args:
+		proc = subprocess.Popen(args, executable = args[0], stdin = input, stdout = output, stderr = err)
 		return proc.wait()
 
 	else: #need to fork process	
+		if input is sys.stdin:
+			input = open(os.devnull, 'r')
+		if output is sys.stdout:
+			output = open(os.devnull, 'w')
+		if err is sys.stderr:
+			err = open('childerror.log', 'a')
+
 		args.remove('&')
 		while '&' in args:
 			args.remove('&')
 		if sys.platform == 'win32':
 			proc = subprocess.Popen(args, 
 		                        	executable = args[0], 
-		                        	stdin = open(os.devnull, 'r'), #read
-		                        	stdout = open(os.devnull, 'w'), #write
-		                        	stderr = open('childerror.log', 'a'), #append
+		                        	stdin = input,
+		                        	stdout = output,
+		                        	stderr = err,
 		                        	creationflags = subprocess.CREATE_NEW_PROCESS_GROUP )
 		else: #Should work with OSX?
 			proc = subprocess.Popen(args, 
 		                        	executable = args[0], 
-		                        	stdin = open(os.devnull, 'r'), #read
-		                        	stdout = open(os.devnull, 'w'), #write
-		                        	stderr = open('childerror.log', 'a'), #append
+		                        	stdin = input,
+		                        	stdout = output,
+		                        	stderr = err,
 									preexec_fn = os.setpgrp)
 		children.append(proc)
 		print "Child process {} started.".format(proc.pid)
