@@ -15,20 +15,30 @@ if sys.version_info[0] != 2:
 	print "This shell is written for Python 2! If this somehow compiled, please do not run it." 	
 		
 def main():
+	prevrun = []
 	warning = 0
 	readline.parse_and_bind('tab: complete') # Enable local file tab completion and history
+	#readline.read_history_file(history.his)
 	# Need to initialize history file here TODO
 
 	while True:
 		try:
 			dir = os.getcwd()
 			input = raw_input('{} >> '.format(dir)) # Print >>, take user input (blocking)
-			if input[0][0] == '!':
-				#history TODO
-				pass
 			args = shlex.split(input) # Use shell lexer module to parse input into list of strings
+			if input[0][0] == '!':
+				if int(input[1][0]) > int(readline.get_current_history_length()):
+					continue
+
+				if readline.get_history_item(int(input[1][0])) is not None:
+					args = shlex.split(readline.get_history_item(int(input[1][0])))
+
+				if int(input[1][0]) == 0:
+					args = prevrun
+	
 			run = builtins.get(args[0], builtin_exec) # Store relevant function into run variable (builtin_exec being default) 
 			retVal = run(args) # Execute function stored in run with arguments args, storing the return value in retVal
+			prevrun = args
 			if warning > 0:
 				warning = warning - 1 # This is a bit silly
 			builtin_check_children()
@@ -53,11 +63,12 @@ def main():
 
 		except OSError:
 			print "Received an OS Error. Does the file or command you're looking for exist, or are you running out of memory?"
-			traceback.print_exc()
+			#traceback.print_exc()
 		
 		except Exception:
 			print "Error: I'm unsure of how to parse/execute the previous input. Common reasons for this are multiple redirects"
 			print "on the same line, commands that don't syntactically make sense, or attempting to reach files that don't exist."
+			print "Nothing but whitespace will also trigger this error."
 			print "Additionally, I caught the following exception:"
 			traceback.print_exc()
 

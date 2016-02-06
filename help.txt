@@ -22,7 +22,7 @@ Bahash currently supports the following basic features:
 
 -Child process reporting, polled after each command
 
--History, and a history file
+-History
 
 -STDIN/STDOUT redirection
 	Note: This will be buggy if you attempt to redirect both at once, or multiple
@@ -47,6 +47,7 @@ Bahash currently supports the following built-in operations:
 
 -'!num': Where num is an integer, repeat that line in history
 	Note: The up and down cursor keys also allow you to traverse history.
+	Note: !0 will run previous command
 
 -'<' and '>': Redirect STDIN and STDOUT, respectively
 
