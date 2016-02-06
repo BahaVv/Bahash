@@ -1,4 +1,5 @@
 import subprocess
+import readline
 import os
 import sys
 
@@ -103,7 +104,12 @@ def builtin_jobs(args):
 
 
 def builtin_history(args):
-	pass
+	print "\033[2J\033[1;1H" # First character clears screen, second places cursor at top-left
+	print "HISTORY"
+	print "-------"
+	for i in range(1, int(readline.get_current_history_length())):
+		print "{}. {}".format(i, readline.get_history_item(i))
+	print ""
 
 
 def builtin_exit(args):
