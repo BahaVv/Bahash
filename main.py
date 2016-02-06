@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 import readline
-from bahash_builtins import builtins, builtin_exec, builtin_kill_children, children 
+from bahash_builtins import builtins, builtin_exec, builtin_check_children, builtin_kill_children, children 
 # Need to trim down/streamline imports
 
 # Note: This is windows compatible! Not OSX however, current readline usage doesn't account for libedit on OSX
@@ -31,7 +31,7 @@ def main():
 			retVal = run(args) # Execute function stored in run with arguments args, storing the return value in retVal
 			if warning > 0:
 				warning = warning - 1 # This is a bit silly
-			#Poll for children here TODO
+			builtin_check_children()
 
 		
 		except KeyboardInterrupt: # Can use Finally to run commands regardless, or else to run things when no exception
@@ -53,6 +53,7 @@ def main():
 
 		except OSError:
 			print "Received an OS Error. Does the file or command you're looking for exist, or are you running out of memory?"
+			traceback.print_exc()
 		
 		except Exception:
 			print "Error: I'm unsure of how to parse/execute the previous input. Common reasons for this are multiple redirects"

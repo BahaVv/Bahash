@@ -82,6 +82,18 @@ def builtin_kill_children():
 		os.kill(proc.pid, 9) # Could switch to 15 and not pop off of list until dead
 	del children[:]
 
+def builtin_check_children():
+	global children
+	for proc in children:
+		ret = proc.poll()
+		if ret is not None:
+			if ret == 1:
+				print "removing dead child {} from list".format(proc.pid)
+				children.remove(proc)
+				continue
+			print "Reaping sick child {}".format(proc.pid)
+			os.kill(proc.pid, 9)
+			children.remove(proc)
 
 def builtin_jobs(args):
 	num = 1
@@ -95,8 +107,7 @@ def builtin_history(args):
 
 
 def builtin_exit(args):
-	#Should probably copy warning schema from ctrl-D TODO
-	exit()
+	raise EOFError 
 
 def builtin_help(args):
 	print "\033[2J\033[1;1H" # First character clears screen, second places cursor at top-left
