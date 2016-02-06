@@ -1,0 +1,67 @@
+Bahash: Baha Shell
+------------------
+
+*Requires Python 2.7 and GNU Readline to be available in your OS*
+
+Bahash is a dead-simple shell written in Python in an attempt to learn basic shell 
+construction, as well as Python as a language. It is not incredibly rigorously 
+tested, and does not support clean built-in messages for most errors/exceptions, 
+resulting in general error messages with tracebacks much of the time. It can, 
+however, recover from most errors. 
+
+--
+
+Bahash currently supports the following basic features:
+
+
+-Windows and Unix compatibility. Not OSX, as libedit is currently not implmented.
+
+-Relative pathing for commands, including application execution
+
+-Basic command expansion (such as expanding ~ to the user's home directory)
+
+-Child process reporting, polled after each command
+
+-History, and a history file
+
+-STDIN/STDOUT redirection
+	Note: This will be buggy if you attempt to redirect both at once, or multiple
+	      times on the same line.
+
+-Quote delimiting (e.g. 'vim "file name.txt"')
+
+-Escape characters in file name (e.g. 'vim file\ name.txt')
+
+-Basic tab completion
+	Note: Does not properly escape spaces
+
+-Child process error logging
+	Note: On by default. Errors are dumped to a childerror.log
+
+--
+
+Bahash currently supports the following built-in operations:
+
+
+-'?' or 'help': Display this page
+
+-'!num': Where num is an integer, repeat that line in history
+	Note: The up and down cursor keys also allow you to traverse history.
+
+-'<' and '>': Redirect STDIN and STDOUT, respectively
+
+-'>>': Redirect STDOUT in append mode (append output to target)
+
+-'&': Open a process in the background
+
+-'cd': Change directory.
+
+-'kill(PID, SIG)': Send a process w/ Process ID PID signal SIG
+
+-'jobs': Display a list of all child processes
+
+-'^C': Kill all child processes
+
+-'^D', 'quit', or 'exit': Quit the shell 
+	Note: Will first warn the user of killing child processes, if any exist
+

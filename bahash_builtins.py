@@ -1,7 +1,10 @@
-ildren = [] # list of children processes
-mport subprocess
+import subprocess
 import os
 import sys
+
+
+children = [] # list of children processes
+
 
 if sys.version_info[0] != 2:
 	print "These builtins were written for Python 2! If this somehow compiled, please do not run it."
@@ -38,9 +41,9 @@ def builtin_exec(args):
 		return proc.wait()
 
 	else: #need to fork process	
-		if input is sys.stdin:
+		if input is sys.stdin: # Due to the magic of 'is' in Python, these statements won't be true if
 			input = open(os.devnull, 'r')
-		if output is sys.stdout:
+		if output is sys.stdout: # the user redirects a stream to std
 			output = open(os.devnull, 'w')
 		if err is sys.stderr:
 			err = open('childerror.log', 'a')
@@ -74,6 +77,11 @@ def builtin_kill(args):
 	except ValueError:
 		print "Kill returned an error. Are you sure your input was correct?"
 
+def builtin_kill_children():
+	for proc in children:
+		os.kill(proc.pid, 9) # Could switch to 15 and not pop off of list until dead
+	del children[:]
+
 
 def builtin_jobs(args):
 	num = 1
@@ -87,10 +95,18 @@ def builtin_history(args):
 
 
 def builtin_exit(args):
+	#Should probably copy warning schema from ctrl-D TODO
 	exit()
+
+def builtin_help(args):
+	print "\033[2J\033[1;1H" # First character clears screen, second places cursor at top-left
+	with open("help.txt") as file:
+		print file.read() # Python should prevent potential overflow here
+	
 
 
 builtins = {
+	'help'    : builtin_help,
 	'cd'      : builtin_cd,
 	'history' : builtin_history,
 	'kill'    : builtin_kill,
