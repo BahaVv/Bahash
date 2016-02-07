@@ -3,10 +3,6 @@ import readline
 import os
 import sys
 
-
-children = [] # list of children processes
-
-
 if sys.version_info[0] != 2:
 	print "These builtins were written for Python 2! If this somehow compiled, please do not run it."
 
